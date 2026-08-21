@@ -1,0 +1,86 @@
+/* ===================================================
+   Site Blocker: Shorts & Reels Blocker
+   =================================================== */
+
+/* YouTube Shorts Hide Rules */
+html.sb-block-shorts-youtube ytd-guide-entry-renderer:has(a[href*="/shorts"]),
+html.sb-block-shorts-youtube ytd-mini-guide-entry-renderer:has(a[href*="/shorts"]),
+html.sb-block-shorts-youtube ytd-guide-entry-renderer:has(a[title="Shorts"]),
+html.sb-block-shorts-youtube ytd-mini-guide-entry-renderer:has(a[title="Shorts"]),
+html.sb-block-shorts-youtube ytm-pivot-bar-item-renderer:has([aria-label*="Shorts"]),
+html.sb-block-shorts-youtube ytd-reel-shelf-renderer,
+html.sb-block-shorts-youtube ytd-rich-shelf-renderer,
+html.sb-block-shorts-youtube ytd-rich-section-renderer:has(ytd-rich-shelf-renderer),
+html.sb-block-shorts-youtube ytd-rich-section-renderer:has(ytd-reel-shelf-renderer),
+html.sb-block-shorts-youtube ytd-rich-section-renderer:has(a[href*="/shorts"]),
+html.sb-block-shorts-youtube ytd-rich-item-renderer:has(a[href*="/shorts"]),
+html.sb-block-shorts-youtube ytd-video-renderer:has(a[href*="/shorts"]),
+html.sb-block-shorts-youtube ytd-grid-video-renderer:has(a[href*="/shorts"]),
+html.sb-block-shorts-youtube ytd-compact-video-renderer:has(a[href*="/shorts"]),
+html.sb-block-shorts-youtube ytd-shorts,
+html.sb-block-shorts-youtube ytd-shorts-lockup-view-model,
+html.sb-block-shorts-youtube ytm-shorts-lockup-view-model,
+html.sb-block-shorts-youtube ytm-shorts-lockup-view-model-v2,
+html.sb-block-shorts-youtube shorts-video-cell-view-model,
+html.sb-block-shorts-youtube [is-shorts],
+html.sb-block-shorts-youtube yt-tab-shape[tab-title="Shorts"],
+html.sb-block-shorts-youtube tp-yt-paper-tab:has(div[text="Shorts"]) {
+  display: none !important;
+}
+
+/* Instagram Reels Hide Rules */
+html.sb-block-shorts-instagram a[href*="/reels/"],
+html.sb-block-shorts-instagram a[href*="/reels"],
+html.sb-block-shorts-instagram a[href*="/reel/"],
+html.sb-block-shorts-instagram div:has(> a[href*="/reels/"]),
+html.sb-block-shorts-instagram div:has(> a[href*="/reel/"]) {
+  display: none !important;
+}
+
+/* Facebook Reels Hide Rules */
+html.sb-block-shorts-facebook a[href*="/reel/"],
+html.sb-block-shorts-facebook a[href*="/reels/"],
+html.sb-block-shorts-facebook div[data-pagelet*="Reels"],
+html.sb-block-shorts-facebook div[aria-label*="Reel"] {
+  display: none !important;
+}
+
+/* ===================================================
+   Site Blocker: Distraction-Free Mode
+   =================================================== */
+
+/* YouTube Focus Mode: Hide Comments */
+html.sb-df-yt-comments #comments,
+html.sb-df-yt-comments ytd-comments,
+html.sb-df-yt-comments ytd-item-section-renderer:has(#comments) {
+  display: none !important;
+}
+
+/* YouTube Focus Mode: Hide Related & Suggested Videos */
+html.sb-df-yt-related #related,
+html.sb-df-yt-related ytd-watch-next-secondary-results-renderer,
+html.sb-df-yt-related .ytp-endscreen-content,
+html.sb-df-yt-related .ytp-ce-element {
+  display: none !important;
+}
+
+/* X (Twitter) Focus Mode: Hide Trends and Who to Follow */
+html.sb-df-x-trends div[aria-label*="Trending"],
+html.sb-df-x-trends div[aria-label*="Tendenze"],
+html.sb-df-x-trends div[aria-label*="Who to follow"],
+html.sb-df-x-trends div[aria-label*="Chi seguire"],
+html.sb-df-x-trends div[data-testid="sidebarColumn"] section {
+  display: none !important;
+}
+
+/* Reddit Focus Mode: Hide Trending and Sidebars */
+html.sb-df-reddit-trends #trending-carousel,
+html.sb-df-reddit-trends [data-testid="frontpage-sidebar"] {
+  display: none !important;
+}
+
+/* LinkedIn Focus Mode: Hide News/Trending */
+html.sb-df-linkedin-news .feed-shared-news-module,
+html.sb-df-linkedin-news section.news-module {
+  display: none !important;
+}

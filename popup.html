@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Site Blocker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="icon.png" alt="Logo" class="logo">
+      <h1>Site Blocker</h1>
+    </div>
+
+    <!-- Distraction-Free Mode (Master Switch) -->
+    <div class="card df-card">
+      <div class="df-header">
+        <div class="df-info">
+          <span class="df-title">🎯 Distraction-Free Mode</span>
+          <span class="df-desc">Instantly block all social media and distracting sites</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="df-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Shorts / Reels Blocker Section -->
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">🚫 Block Short Videos</span>
+      </div>
+      <div class="checkbox-grid">
+        <label class="checkbox-label" for="shorts-youtube">
+          <input type="checkbox" id="shorts-youtube">
+          <span class="custom-checkbox"></span>
+          <span class="label-text">YouTube Shorts</span>
+        </label>
+        <label class="checkbox-label" for="shorts-instagram">
+          <input type="checkbox" id="shorts-instagram">
+          <span class="custom-checkbox"></span>
+          <span class="label-text">Instagram Reels</span>
+        </label>
+        <label class="checkbox-label" for="shorts-tiktok">
+          <input type="checkbox" id="shorts-tiktok">
+          <span class="custom-checkbox"></span>
+          <span class="label-text">TikTok</span>
+        </label>
+        <label class="checkbox-label" for="shorts-facebook">
+          <input type="checkbox" id="shorts-facebook">
+          <span class="custom-checkbox"></span>
+          <span class="label-text">Facebook Reels</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Website Blocker Section (User's Custom List) -->
+    <div class="card">
+      <div class="section-header">
+        <span class="section-title">🌐 Your Blocked Sites</span>
+        <span class="badge" id="sites-count">0</span>
+      </div>
+      <div class="main-controls">
+        <button id="toggle-block-btn">Block current site</button>
+        <div class="input-group">
+          <input type="text" id="site-input" placeholder="e.g. example.com">
+          <button id="add-btn">Add</button>
+        </div>
+      </div>
+      <ul id="blocked-list"></ul>
+    </div>
+    
+    <!-- Import / Export Section -->
+    <div class="card import-export">
+      <div class="import-export-buttons">
+        <button id="export-btn" class="secondary-btn">Export List</button>
+        <button id="import-btn" class="secondary-btn">Import List</button>
+      </div>
+      <textarea id="import-export-area" placeholder="Paste JSON list here to import..."></textarea>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

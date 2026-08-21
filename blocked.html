@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindful Pause</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.35);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 24px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .site-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+
+        .site-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+
+        /* Breathing Circle */
+        .breath-container {
+            position: relative;
+            width: 190px;
+            height: 190px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .breath-outer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed rgba(139, 92, 246, 0.2);
+            animation: rotateSlow 20s linear infinite;
+        }
+
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .breath-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.85) 0%, rgba(109, 40, 217, 0.45) 60%, rgba(139, 92, 246, 0.05) 100%);
+            box-shadow: 0 0 35px var(--primary-glow);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            animation: breathe 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% {
+                transform: scale(0.85);
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+            }
+            33% {
+                transform: scale(1.35);
+                box-shadow: 0 0 50px rgba(139, 92, 246, 0.6);
+            }
+            66% {
+                transform: scale(1.35);
+                box-shadow: 0 0 40px rgba(167, 139, 250, 0.5);
+            }
+        }
+
+        .breath-instruction {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .timer-text {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .heading {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+        }
+
+        .subheading {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 440px;
+        }
+
+        /* Buttons & Actions */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 320px;
+            margin-top: 6px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
+            transition: all 0.2s ease;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(139, 92, 246, 0.55);
+        }
+
+        .quote-box {
+            margin-top: 15px;
+            padding: 10px 18px;
+            border-left: 2px solid rgba(139, 92, 246, 0.5);
+            background: rgba(139, 92, 246, 0.06);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-style: italic;
+            text-align: left;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Site Badge -->
+        <div class="site-badge" id="site-badge" style="display: none;">
+            <span class="dot"></span>
+            <span id="blocked-domain">Blocked Site</span>
+        </div>
+
+        <!-- Breathing Guidance Animation -->
+        <div class="breath-container">
+            <div class="breath-outer-ring"></div>
+            <div class="breath-circle">
+                <span class="breath-instruction" id="breath-text">Inhale</span>
+                <span class="timer-text" id="countdown-text">10s</span>
+            </div>
+        </div>
+
+        <h1 class="heading">Take a Mindful Pause</h1>
+        <p class="subheading">Take a moment to breathe. Are you sure you want to break your focus state?</p>
+
+        <div class="actions">
+            <button class="btn-primary" id="close-tab-btn">
+                <span>🛡️</span> Back to work
+            </button>
+        </div>
+
+        <div class="quote-box">
+            "True freedom is having full control over your attention."
+        </div>
+    </div>
+
+    <script src="blocked.js"></script>
+</body>
+</html>

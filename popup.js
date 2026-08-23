@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Load Shorts settings
   async function loadShortsSettings() {
-    const { shortsSettings = { youtube: true, instagram: true, tiktok: true, facebook: true } } =
+    const { shortsSettings = { youtube: false, instagram: false, tiktok: false, facebook: false } } =
       await chrome.storage.sync.get(['shortsSettings']);
 
     for (const [platform, checkbox] of Object.entries(shortsCheckboxes)) {
       if (checkbox) {
-        checkbox.checked = shortsSettings[platform] !== false;
+        checkbox.checked = shortsSettings[platform] === true;
       }
     }
   }
@@ -57,19 +57,15 @@ document.addEventListener('DOMContentLoaded', function () {
   for (const [platform, checkbox] of Object.entries(shortsCheckboxes)) {
     if (checkbox) {
       checkbox.addEventListener('change', async function () {
-        const { shortsSettings = { youtube: true, instagram: true, tiktok: true, facebook: true } } =
+        const { shortsSettings = { youtube: false, instagram: false, tiktok: false, facebook: false } } =
           await chrome.storage.sync.get(['shortsSettings']);
 
         const updatedSettings = {
-          youtube: shortsSettings.youtube !== false,
-          instagram: shortsSettings.instagram !== false,
-          tiktok: shortsSettings.tiktok !== false,
-          facebook: shortsSettings.facebook !== false,
+          ...shortsSettings,
           [platform]: checkbox.checked
         };
 
-        await chrome.storage.sync.set({ shortsSettings: updatedSettings });
-        chrome.runtime.sendMessage({ action: 'updateRules' }).catch(() => {});
+        await chrome.storage.sync.set({ shortsSettings: updatedSettings, tempBypasses: {} });
       });
     }
   }

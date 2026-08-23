@@ -44,8 +44,9 @@
     return h === t || h.endsWith('.' + t);
   }
 
-  let isShortsEnabled = true;
+  let isShortsEnabled = false;
   let isSiteBlocked = false;
+  let isSettingsLoaded = false;
 
   function isShortsUrl(urlStr) {
     try {
@@ -71,6 +72,7 @@
   }
 
   function handleCheck() {
+    if (!isSettingsLoaded) return;
     const currentUrl = window.location.href;
 
     // Check full site block (custom or distraction-free mode)
@@ -94,7 +96,7 @@
   }
 
   function cleanDomElements() {
-    if (!isShortsEnabled) return;
+    if (!isSettingsLoaded || !isShortsEnabled) return;
 
     if (currentPlatform === 'youtube') {
       document.querySelectorAll('ytd-guide-entry-renderer a[href*="/shorts"], ytd-mini-guide-entry-renderer a[href*="/shorts"]').forEach(a => {
@@ -102,9 +104,8 @@
         if (item) item.style.setProperty('display', 'none', 'important');
       });
 
-      document.querySelectorAll('ytd-rich-shelf-renderer, ytd-reel-shelf-renderer, ytd-shorts, ytd-shorts-lockup-view-model, ytm-shorts-lockup-view-model, shorts-video-cell-view-model').forEach(el => {
-        const section = el.closest('ytd-rich-section-renderer, ytd-item-section-renderer') || el;
-        section.style.setProperty('display', 'none', 'important');
+      document.querySelectorAll('ytd-rich-shelf-renderer[is-shorts], ytd-rich-shelf-renderer:has(a[href*="/shorts"]), ytd-reel-shelf-renderer, ytd-shorts, ytd-shorts-lockup-view-model, ytm-shorts-lockup-view-model, shorts-video-cell-view-model').forEach(el => {
+        el.style.setProperty('display', 'none', 'important');
       });
 
       document.querySelectorAll('ytd-rich-item-renderer a[href*="/shorts/"], ytd-video-renderer a[href*="/shorts/"], ytd-grid-video-renderer a[href*="/shorts/"], ytd-compact-video-renderer a[href*="/shorts/"]').forEach(a => {
@@ -112,29 +113,46 @@
         if (item) item.style.setProperty('display', 'none', 'important');
       });
     } else if (currentPlatform === 'instagram') {
-      document.querySelectorAll('a[href*="/reels/"], a[href*="/reels"]').forEach(a => {
-        const item = a.closest('div[role="listitem"]') || a.parentElement || a;
-        if (item) item.style.setProperty('display', 'none', 'important');
-      });
-
-      document.querySelectorAll('a[href*="/reel/"]').forEach(a => {
-        const item = a.closest('article, div:has(> a[href*="/reel/"])') || a;
-        if (item) item.style.setProperty('display', 'none', 'important');
+      document.querySelectorAll('a[href="/reels/"], a[href^="/reels?"]').forEach(a => {
+        const navItem = a.closest('div[role="listitem"]') || a;
+        if (navItem) navItem.style.setProperty('display', 'none', 'important');
       });
     }
   }
 
   function applySettings(storageData) {
+    isSettingsLoaded = true;
     const blockedSites = storageData.blockedSites || [];
     const dfSettings = storageData.dfSettings || { enabled: false };
     const shortsSettings = storageData.shortsSettings || {};
+    const tempBypasses = storageData.tempBypasses || {};
+
+    const now = Date.now();
+    const currentHref = window.location.href;
+    const isBypassed = Object.entries(tempBypasses).some(([key, expiresAt]) => {
+      if (expiresAt <= now) return false;
+      if (key.startsWith('http://') || key.startsWith('https://')) {
+        return currentHref === key || currentHref.startsWith(key);
+      }
+      const d = key.toLowerCase().replace(/^www\./, '');
+      return hostname === d || hostname.endsWith('.' + d);
+    });
+
+    if (isBypassed) {
+      isSiteBlocked = false;
+      isShortsEnabled = false;
+      if (currentPlatform) {
+        document.documentElement.classList.remove(`sb-block-shorts-${currentPlatform}`);
+      }
+      return;
+    }
 
     // Check if current site is blocked
     const inCustomList = blockedSites.some(site => siteMatches(hostname, site));
     const inDfList = dfSettings.enabled && DISTRACTION_FREE_SITES.some(site => siteMatches(hostname, site));
 
     isSiteBlocked = inCustomList || inDfList;
-    isShortsEnabled = currentPlatform && shortsSettings[currentPlatform] !== false;
+    isShortsEnabled = currentPlatform && shortsSettings[currentPlatform] === true;
 
     if (currentPlatform) {
       const shortsClassName = `sb-block-shorts-${currentPlatform}`;
@@ -150,14 +168,14 @@
   }
 
   // Load initial settings
-  chrome.storage.sync.get(['blockedSites', 'dfSettings', 'shortsSettings'], function (res) {
+  chrome.storage.sync.get(['blockedSites', 'dfSettings', 'shortsSettings', 'tempBypasses'], function (res) {
     applySettings(res || {});
   });
 
   // Listen for storage changes in real-time
   chrome.storage.onChanged.addListener(function (changes, namespace) {
     if (namespace === 'sync') {
-      chrome.storage.sync.get(['blockedSites', 'dfSettings', 'shortsSettings'], function (res) {
+      chrome.storage.sync.get(['blockedSites', 'dfSettings', 'shortsSettings', 'tempBypasses'], function (res) {
         applySettings(res || {});
       });
     }

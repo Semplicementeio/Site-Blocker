@@ -8,12 +8,14 @@ Most site blockers quietly collect telemetry or inject third-party scripts. Site
 
 ## 🌐 Supported Browsers
 
-Works on all Chromium-based browsers:
-- Brave 
-- Chrome   
-- Edge  
-- Vivaldi
-- Opera
+Compatible with all major modern web browsers supporting WebExtension Manifest V3:
+
+- **Brave**
+- **Firefox** (Desktop, Nightly, Developer Edition, LibreWolf, Waterfox)
+- **Chrome**
+- **Edge**
+- **Vivaldi**
+- **Opera**
 
 ---
 
@@ -26,17 +28,41 @@ Works on all Chromium-based browsers:
 - **⚡ Instant Tab Redirection**: Actively updates and redirects open tabs in real-time as soon as you toggle modes or block a site.
 - **🎨 Premium Violet Dark Mode**: Sleek, unified dark interface styled with a coherent violet theme (`#8b5cf6`) and 100% local system UI fonts (zero external Google Fonts or CDNs).
 - **💾 Import / Export**: Backup and restore your custom blocklist anytime via JSON.
-- **🔒 Privacy-First & CSP Compliant**: Built strictly for Chrome Extension Manifest V3 with 0 analytics, 0 telemetry, and 100% local storage.
+- **🔒 Privacy-First & CSP Compliant**: Built strictly with WebExtensions Manifest V3 with 0 analytics, 0 telemetry, and 100% local storage.
 
 ---
 
 ## 🚀 Getting Started
 
-1. Clone or download this repository.
-2. In your Chromium browser, navigate to `chrome://extensions/`.
-3. Enable **Developer mode** (top-right corner).
-4. Click **"Load unpacked"** and select the folder containing this extension.
-5. Click the extension icon to manage your focus settings!
+1. Clone or download this repository to your computer:
+   ```bash
+   git clone https://github.com/Loki-it/Site-Blocker.git
+   ```
+
+---
+
+### 🌐 Chrome & Chromium Browsers (Brave, Edge, Vivaldi, Opera)
+
+1. Open your browser and navigate to `chrome://extensions/` (or `edge://extensions/`).
+2. Enable **Developer mode** in the top-right corner.
+3. Click **"Load unpacked"** and select the extension directory.
+4. Click the extension icon to manage your focus settings!
+
+### 🦊 Mozilla Firefox
+
+In standard Firefox releases, unsigned local extensions installed via `about:addons` are blocked with an *"unverified"* message. Use one of the following methods:
+
+#### Method 1: Load Temporary Add-on (Recommended for local testing)
+1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
+2. Click **"Load Temporary Add-on..."**.
+3. Select the **`manifest.json`** file inside the extension folder (or select `web-ext-artifacts/site_blocker-2.0.zip`).
+4. The extension will activate immediately without signature checks!
+
+#### Method 2: Permanent Installation via `about:config` (Firefox Developer / Nightly / ESR)
+If you want to install it permanently via `about:addons`:
+1. Navigate to `about:config` in your URL bar and accept the warning.
+2. Search for `xpinstall.signatures.required` and set it to **`false`**.
+3. Go to `about:addons` ➔ ⚙️ ➔ **"Install Add-on From File..."** and select `web-ext-artifacts/site_blocker-2.0.zip`.
 
 ---
 

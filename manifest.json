@@ -3,6 +3,12 @@
   "name": "Site Blocker",
   "version": "2.0",
   "description": "A minimal, privacy-first browser extension to block distracting websites, YouTube Shorts, Instagram Reels, and boost focus with a 1-click Distraction-Free mode and mindful breathing pause.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "site-blocker@extension",
+      "strict_min_version": "113.0"
+    }
+  },
   "permissions": [
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
@@ -14,7 +20,8 @@
     "https://*/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
   },
   "action": {
     "default_popup": "popup.html",

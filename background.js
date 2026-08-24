@@ -65,7 +65,13 @@ async function redirectOpenBlockedTabs(blockedList, dfActive, shortsActive) {
     const validBypasses = await getTempBypasses();
     const tabs = await chrome.tabs.query({});
     for (const tab of tabs) {
-      if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+      if (
+        !tab.url ||
+        tab.url.startsWith('chrome://') ||
+        tab.url.startsWith('chrome-extension://') ||
+        tab.url.startsWith('moz-extension://') ||
+        tab.url.startsWith('about:')
+      ) {
         continue;
       }
 
@@ -80,6 +86,7 @@ async function redirectOpenBlockedTabs(blockedList, dfActive, shortsActive) {
         continue;
       }
 
+      const hostname = tabUrl.hostname;
       let shouldBlock = false;
 
       // Check custom blocked sites

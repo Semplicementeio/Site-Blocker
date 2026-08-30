@@ -8,8 +8,8 @@
         :root {
             --bg-color: #0c0d0e;
             --card-bg: #18191b;
-            --primary: #b91c1c;
-            --primary-glow: rgba(185, 28, 28, 0.3);
+            --primary: #0ea5e9;
+            --primary-glow: rgba(56, 189, 248, 0.3);
             --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
             --border-color: #27272a;
@@ -66,7 +66,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 2px dashed rgba(185, 28, 28, 0.25);
+            border: 2px dashed rgba(56, 189, 248, 0.25);
             animation: rotateSlow 20s linear infinite;
         }
 
@@ -79,7 +79,7 @@
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(185, 28, 28, 0.85) 0%, rgba(127, 29, 29, 0.55) 60%, rgba(185, 28, 28, 0.05) 100%);
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.85) 0%, rgba(14, 165, 233, 0.55) 60%, rgba(2, 132, 199, 0.08) 100%);
             box-shadow: 0 0 35px var(--primary-glow);
             display: flex;
             flex-direction: column;
@@ -92,15 +92,15 @@
         @keyframes breathe {
             0%, 100% {
                 transform: scale(0.85);
-                box-shadow: 0 0 20px rgba(185, 28, 28, 0.2);
+                box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
             }
             33% {
                 transform: scale(1.35);
-                box-shadow: 0 0 50px rgba(185, 28, 28, 0.55);
+                box-shadow: 0 0 50px rgba(56, 189, 248, 0.55);
             }
             66% {
                 transform: scale(1.35);
-                box-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
+                box-shadow: 0 0 40px rgba(125, 211, 252, 0.4);
             }
         }
 
@@ -114,7 +114,7 @@
 
         .timer-text {
             font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             margin-top: 2px;
             font-weight: 500;
         }
@@ -136,8 +136,8 @@
         .quote-box {
             margin-top: 4px;
             padding: 10px 18px;
-            border-left: 2px solid rgba(185, 28, 28, 0.55);
-            background: rgba(185, 28, 28, 0.07);
+            border-left: 2px solid rgba(56, 189, 248, 0.55);
+            background: rgba(56, 189, 248, 0.07);
             border-radius: 0 8px 8px 0;
             font-size: 0.85rem;
             color: #a1a1aa;
@@ -161,25 +161,25 @@
             justify-content: center;
             align-items: center;
             padding: 12px 24px;
-            background: rgba(185, 28, 28, 0.12);
-            border: 1.5px solid rgba(185, 28, 28, 0.55);
-            color: #fca5a5;
+            background: rgba(14, 165, 233, 0.12);
+            border: 1.5px solid rgba(56, 189, 248, 0.5);
+            color: #7dd3fc;
             border-radius: 10px;
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
-            box-shadow: 0 0 12px rgba(185, 28, 28, 0.15);
+            box-shadow: 0 0 14px rgba(14, 165, 233, 0.15);
             transition: all 0.2s ease;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         .btn-primary:hover {
             transform: translateY(-1px);
-            background: rgba(185, 28, 28, 0.24);
-            border-color: #b91c1c;
+            background: rgba(14, 165, 233, 0.24);
+            border-color: #38bdf8;
             color: #ffffff;
-            box-shadow: 0 0 20px rgba(185, 28, 28, 0.35);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
         }
 
         .btn-secondary {
@@ -227,8 +227,8 @@
         }
 
         .support-link:hover {
-            color: #fca5a5;
-            background: rgba(185, 28, 28, 0.1);
+            color: #7dd3fc;
+            background: rgba(56, 189, 248, 0.1);
         }
     </style>
 </head>

@@ -1,6 +1,6 @@
 # Site Blocker - Minimal & Privacy-First Browser Extension
 
-[![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-emerald?style=flat-square&logo=shield)](LICENSE) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue?style=flat-square)](manifest.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE) [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-b91c1c?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/semplicemente)
+[![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-emerald?style=flat-square&logo=shield)](LICENSE) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue?style=flat-square)](manifest.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE) [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-b91c1c?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/semplicementeio)
 
 **Site Blocker** is a minimalist, privacy-first browser extension designed to help you regain full control over your digital focus and browsing habits without tracking or compromising your data.
 
@@ -64,7 +64,7 @@ For local development and testing:
 
 If you find **Site Blocker** helpful in reclaiming your focus and saving your time, you can support future development on Ko-fi:
 
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-b91c1c?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/semplicemente)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-b91c1c?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/semplicementeio)
 
 ---
 

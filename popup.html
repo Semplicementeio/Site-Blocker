@@ -8,8 +8,13 @@
 <body>
   <div class="container">
     <div class="header">
-      <img src="icon.png" alt="Logo" class="logo">
-      <h1>Site Blocker</h1>
+      <div class="header-brand">
+        <img src="icon.png" alt="Logo" class="logo">
+        <h1>Site Blocker</h1>
+      </div>
+      <a href="https://ko-fi.com/semplicemente" target="_blank" rel="noopener noreferrer" class="kofi-btn" title="Support on Ko-fi">
+        ☕ Support
+      </a>
     </div>
 
     <!-- Distraction-Free Mode (Master Switch) -->
@@ -71,14 +76,20 @@
       <ul id="blocked-list"></ul>
     </div>
     
-    <!-- Import / Export Section -->
-    <div class="card import-export">
-      <div class="import-export-buttons">
-        <button id="export-btn" class="secondary-btn">Export List</button>
-        <button id="import-btn" class="secondary-btn">Import List</button>
+    <!-- Import / Export Section (Collapsible) -->
+    <details class="card import-export">
+      <summary class="import-export-summary">
+        <span class="section-title">💾 Backup & Restore (JSON)</span>
+        <span class="chevron">▾</span>
+      </summary>
+      <div class="import-export-content">
+        <div class="import-export-buttons">
+          <button id="export-btn" class="secondary-btn">Export List</button>
+          <button id="import-btn" class="secondary-btn">Import List</button>
+        </div>
+        <textarea id="import-export-area" placeholder="Paste JSON list here to import..."></textarea>
       </div>
-      <textarea id="import-export-area" placeholder="Paste JSON list here to import..."></textarea>
-    </div>
+    </details>
   </div>
   <script src="popup.js"></script>
 </body>

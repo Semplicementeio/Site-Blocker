@@ -1,81 +1,29 @@
 (function () {
-  const hostname = window.location.hostname.toLowerCase().replace(/^www\./, '');
-  let currentPlatform = null;
+  'use strict';
 
-  if (hostname.includes('youtube.com')) {
-    currentPlatform = 'youtube';
-  } else if (hostname.includes('instagram.com')) {
-    currentPlatform = 'instagram';
-  } else if (hostname.includes('tiktok.com')) {
-    currentPlatform = 'tiktok';
-  } else if (hostname.includes('facebook.com')) {
-    currentPlatform = 'facebook';
-  } else if (hostname.includes('twitter.com') || hostname.includes('x.com')) {
-    currentPlatform = 'x';
-  } else if (hostname.includes('reddit.com')) {
-    currentPlatform = 'reddit';
-  } else if (hostname.includes('linkedin.com')) {
-    currentPlatform = 'linkedin';
-  }
+  const {
+    DISTRACTION_FREE_SITES = [],
+    siteMatches,
+    getPlatform,
+    isShortsUrl,
+    isUrlBypassed,
+    getLocalStorage,
+    getSessionStorage
+  } = (typeof SiteBlockerUtils !== 'undefined' ? SiteBlockerUtils : {});
 
-  const DISTRACTION_FREE_SITES = [
-    'youtube.com',
-    'instagram.com',
-    'facebook.com',
-    'tiktok.com',
-    'x.com',
-    'twitter.com',
-    'reddit.com',
-    'twitch.tv',
-    'threads.net',
-    'pinterest.com',
-    'netflix.com',
-    'linkedin.com',
-    'snapchat.com',
-    'discord.com',
-    'tumblr.com',
-    '9gag.com',
-    'buzzfeed.com'
-  ];
-
-  function siteMatches(host, target) {
-    const h = host.toLowerCase().replace(/^www\./, '');
-    const t = target.toLowerCase().replace(/^www\./, '');
-    return h === t || h.endsWith('.' + t);
-  }
+  const hostname = window.location.hostname.toLowerCase().replace(/^(www\.)+/i, '');
+  const currentPlatform = getPlatform ? getPlatform(hostname) : null;
 
   let isShortsEnabled = false;
   let isSiteBlocked = false;
   let isSettingsLoaded = false;
-
-  function isShortsUrl(urlStr) {
-    try {
-      const url = new URL(urlStr);
-      const path = url.pathname;
-
-      if (currentPlatform === 'youtube') {
-        return path.startsWith('/shorts') || path.includes('/shorts/');
-      }
-      if (currentPlatform === 'instagram') {
-        return path.startsWith('/reels') || path.startsWith('/reel');
-      }
-      if (currentPlatform === 'tiktok') {
-        return true;
-      }
-      if (currentPlatform === 'facebook') {
-        return path.startsWith('/reel') || path.startsWith('/reels');
-      }
-    } catch {
-      return false;
-    }
-    return false;
-  }
+  let isObserverActive = false;
+  let lastUrl = window.location.href;
 
   function handleCheck() {
     if (!isSettingsLoaded) return;
     const currentUrl = window.location.href;
 
-    // Check full site block (custom or distraction-free mode)
     if (isSiteBlocked) {
       document.querySelectorAll('video, audio').forEach(v => {
         try { v.pause(); } catch (e) {}
@@ -85,8 +33,7 @@
       return;
     }
 
-    // Check Shorts block
-    if (isShortsEnabled && isShortsUrl(currentUrl)) {
+    if (isShortsEnabled && isShortsUrl && isShortsUrl(currentUrl, currentPlatform)) {
       document.querySelectorAll('video, audio').forEach(v => {
         try { v.pause(); } catch (e) {}
       });
@@ -97,6 +44,8 @@
 
   function cleanDomElements() {
     if (!isSettingsLoaded || !isShortsEnabled) return;
+    if (currentPlatform !== 'youtube' && currentPlatform !== 'instagram') return;
+    if (!document.documentElement && !document.body) return;
 
     if (currentPlatform === 'youtube') {
       document.querySelectorAll('ytd-guide-entry-renderer a[href*="/shorts"], ytd-mini-guide-entry-renderer a[href*="/shorts"]').forEach(a => {
@@ -120,114 +69,186 @@
     }
   }
 
+  let cleanDomTimer = null;
+  function scheduleCleanDom(delay = 150) {
+    if (!isShortsEnabled || (currentPlatform !== 'youtube' && currentPlatform !== 'instagram')) return;
+    if (cleanDomTimer) {
+      clearTimeout(cleanDomTimer);
+    }
+    cleanDomTimer = setTimeout(() => {
+      cleanDomTimer = null;
+      cleanDomElements();
+    }, delay);
+  }
+
+  const observer = new MutationObserver(function () {
+    scheduleCleanDom(150);
+  });
+
+  function updateObserverState() {
+    const shouldObserve = isShortsEnabled && (currentPlatform === 'youtube' || currentPlatform === 'instagram');
+    if (shouldObserve && !isObserverActive && document.documentElement) {
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+      isObserverActive = true;
+    } else if (!shouldObserve && isObserverActive) {
+      observer.disconnect();
+      isObserverActive = false;
+    }
+  }
+
+  async function loadSettings() {
+    const localStorage = getLocalStorage ? getLocalStorage() : (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local);
+    if (!localStorage) return;
+
+    try {
+      const localData = await new Promise(resolve => {
+        try {
+          const res = localStorage.get(['blockedSites', 'dfSettings', 'shortsSettings'], items => {
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.lastError) {
+              resolve({});
+            } else {
+              resolve(items || {});
+            }
+          });
+          if (res && typeof res.then === 'function') {
+            res.then(resolve).catch(() => resolve({}));
+          }
+        } catch (err) {
+          resolve({});
+        }
+      });
+
+      let sessionData = {};
+      try {
+        const sessionStorage = getSessionStorage ? getSessionStorage() : (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.session);
+        if (sessionStorage && typeof sessionStorage.get === 'function') {
+          sessionData = await new Promise(resolve => {
+            try {
+              const res = sessionStorage.get(['tempBypasses'], items => {
+                if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.lastError) {
+                  resolve({});
+                } else {
+                  resolve(items || {});
+                }
+              });
+              if (res && typeof res.then === 'function') {
+                res.then(resolve).catch(() => resolve({}));
+              }
+            } catch (err) {
+              resolve({});
+            }
+          });
+        }
+      } catch (sessionErr) {
+        sessionData = {};
+      }
+
+      applySettings({
+        ...localData,
+        tempBypasses: sessionData ? (sessionData.tempBypasses || {}) : {}
+      });
+    } catch (e) {
+      console.error('Error loading settings in content script:', e);
+    }
+  }
+
   function applySettings(storageData) {
     isSettingsLoaded = true;
-    const blockedSites = storageData.blockedSites || [];
+    const blockedSites = Array.isArray(storageData.blockedSites) ? storageData.blockedSites : [];
     const dfSettings = storageData.dfSettings || { enabled: false };
     const shortsSettings = storageData.shortsSettings || {};
     const tempBypasses = storageData.tempBypasses || {};
 
-    const now = Date.now();
-    const currentHref = window.location.href;
-    const isBypassed = Object.entries(tempBypasses).some(([key, expiresAt]) => {
-      if (expiresAt <= now) return false;
-      if (key.startsWith('http://') || key.startsWith('https://')) {
-        return currentHref === key || currentHref.startsWith(key);
-      }
-      const d = key.toLowerCase().replace(/^www\./, '');
-      return hostname === d || hostname.endsWith('.' + d);
-    });
+    const bypassed = isUrlBypassed ? isUrlBypassed(window.location.href, tempBypasses) : false;
 
-    if (isBypassed) {
+    if (bypassed) {
       isSiteBlocked = false;
       isShortsEnabled = false;
-      if (currentPlatform) {
+      if (currentPlatform && document.documentElement) {
         document.documentElement.classList.remove(`sb-block-shorts-${currentPlatform}`);
       }
+      updateObserverState();
       return;
     }
 
-    // Check if current site is blocked
-    const inCustomList = blockedSites.some(site => siteMatches(hostname, site));
-    const inDfList = dfSettings.enabled && DISTRACTION_FREE_SITES.some(site => siteMatches(hostname, site));
+    const inCustomList = blockedSites.some(site => siteMatches && siteMatches(hostname, site));
+    const inDfList = dfSettings.enabled && DISTRACTION_FREE_SITES && DISTRACTION_FREE_SITES.some(site => siteMatches && siteMatches(hostname, site));
 
     isSiteBlocked = inCustomList || inDfList;
-    isShortsEnabled = currentPlatform && shortsSettings[currentPlatform] === true;
+    isShortsEnabled = !!(currentPlatform && shortsSettings[currentPlatform] === true);
 
     if (currentPlatform) {
       const shortsClassName = `sb-block-shorts-${currentPlatform}`;
-      if (isShortsEnabled) {
-        document.documentElement.classList.add(shortsClassName);
+      if (document.documentElement) {
+        if (isShortsEnabled) {
+          document.documentElement.classList.add(shortsClassName);
+        } else {
+          document.documentElement.classList.remove(shortsClassName);
+        }
       } else {
-        document.documentElement.classList.remove(shortsClassName);
+        const rootObserver = new MutationObserver(() => {
+          if (document.documentElement) {
+            rootObserver.disconnect();
+            if (isShortsEnabled) {
+              document.documentElement.classList.add(shortsClassName);
+            }
+            updateObserverState();
+          }
+        });
+        rootObserver.observe(document, { childList: true });
       }
     }
 
+    updateObserverState();
     handleCheck();
-    cleanDomElements();
+    if (isShortsEnabled) {
+      scheduleCleanDom(0);
+    }
   }
 
-  // Load initial settings
-  chrome.storage.sync.get(['blockedSites', 'dfSettings', 'shortsSettings', 'tempBypasses'], function (res) {
-    applySettings(res || {});
-  });
+  loadSettings();
 
-  // Listen for storage changes in real-time
   chrome.storage.onChanged.addListener(function (changes, namespace) {
-    if (namespace === 'sync') {
-      chrome.storage.sync.get(['blockedSites', 'dfSettings', 'shortsSettings', 'tempBypasses'], function (res) {
-        applySettings(res || {});
-      });
+    if (namespace === 'local' || namespace === 'session') {
+      loadSettings();
     }
   });
 
-  // Listen for navigation events
-  window.addEventListener('yt-navigate-finish', function () {
+  function onNavigation() {
+    lastUrl = window.location.href;
+    updateObserverState();
     handleCheck();
-    cleanDomElements();
-  });
-  window.addEventListener('popstate', function () {
-    handleCheck();
-    cleanDomElements();
-  });
+    scheduleCleanDom(0);
+  }
+
+  window.addEventListener('yt-navigate-finish', onNavigation);
+  window.addEventListener('popstate', onNavigation);
   document.addEventListener('DOMContentLoaded', function () {
-    handleCheck();
-    cleanDomElements();
+    if (currentPlatform && isShortsEnabled && document.documentElement) {
+      document.documentElement.classList.add(`sb-block-shorts-${currentPlatform}`);
+    }
+    updateObserverState();
+    onNavigation();
   });
 
-  // Intercept history pushState/replaceState
   const originalPushState = history.pushState;
   history.pushState = function () {
     originalPushState.apply(this, arguments);
-    handleCheck();
-    cleanDomElements();
+    onNavigation();
   };
 
   const originalReplaceState = history.replaceState;
   history.replaceState = function () {
     originalReplaceState.apply(this, arguments);
-    handleCheck();
-    cleanDomElements();
+    onNavigation();
   };
 
-  // MutationObserver
-  const observer = new MutationObserver(function () {
-    handleCheck();
-    cleanDomElements();
-  });
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  });
-
-  // Periodic safety check
-  let lastUrl = window.location.href;
   setInterval(function () {
     if (window.location.href !== lastUrl) {
-      lastUrl = window.location.href;
-      handleCheck();
-      cleanDomElements();
+      onNavigation();
     }
-  }, 300);
+  }, 1000);
 })();

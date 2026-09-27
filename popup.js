@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const { normalizeDomain, siteMatches, getLocalStorage, getSessionStorage } = SiteBlockerUtils;
+  const localStorage = getLocalStorage();
+  const sessionStorage = getSessionStorage();
+
   const siteInput = document.getElementById('site-input');
   const addBtn = document.getElementById('add-btn');
   const blockedList = document.getElementById('blocked-list');
@@ -7,11 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const importBtn = document.getElementById('import-btn');
   const importExportArea = document.getElementById('import-export-area');
   const toggleBlockBtn = document.getElementById('toggle-block-btn');
-
-  // Distraction-Free Toggle
   const dfToggle = document.getElementById('df-toggle');
 
-  // Shorts checkboxes
   const shortsCheckboxes = {
     youtube: document.getElementById('shorts-youtube'),
     instagram: document.getElementById('shorts-instagram'),
@@ -19,32 +20,29 @@ document.addEventListener('DOMContentLoaded', function () {
     facebook: document.getElementById('shorts-facebook')
   };
 
-  // Initial load
   loadAndRenderBlockedSites();
   loadShortsSettings();
   loadDfSettings();
 
-  // Load Distraction-Free state
   async function loadDfSettings() {
-    const { dfSettings = { enabled: false } } = await chrome.storage.sync.get(['dfSettings']);
+    if (!localStorage) return;
+    const { dfSettings = { enabled: false } } = await localStorage.get(['dfSettings']);
     if (dfToggle) {
       dfToggle.checked = !!(dfSettings && dfSettings.enabled);
     }
   }
 
-  // Handle Distraction-Free Toggle
-  if (dfToggle) {
+  if (dfToggle && localStorage) {
     dfToggle.addEventListener('change', async function () {
       const updatedDf = { enabled: dfToggle.checked };
-      await chrome.storage.sync.set({ dfSettings: updatedDf });
-      chrome.runtime.sendMessage({ action: 'updateRules' }).catch(() => {});
+      await localStorage.set({ dfSettings: updatedDf });
     });
   }
 
-  // Load Shorts settings
   async function loadShortsSettings() {
+    if (!localStorage) return;
     const { shortsSettings = { youtube: false, instagram: false, tiktok: false, facebook: false } } =
-      await chrome.storage.sync.get(['shortsSettings']);
+      await localStorage.get(['shortsSettings']);
 
     for (const [platform, checkbox] of Object.entries(shortsCheckboxes)) {
       if (checkbox) {
@@ -53,34 +51,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Handle Shorts checkbox changes
   for (const [platform, checkbox] of Object.entries(shortsCheckboxes)) {
-    if (checkbox) {
+    if (checkbox && localStorage) {
       checkbox.addEventListener('change', async function () {
         const { shortsSettings = { youtube: false, instagram: false, tiktok: false, facebook: false } } =
-          await chrome.storage.sync.get(['shortsSettings']);
+          await localStorage.get(['shortsSettings']);
 
         const updatedSettings = {
           ...shortsSettings,
           [platform]: checkbox.checked
         };
 
-        await chrome.storage.sync.set({ shortsSettings: updatedSettings, tempBypasses: {} });
+        await localStorage.set({ shortsSettings: updatedSettings });
+        if (sessionStorage) {
+          await sessionStorage.set({ tempBypasses: {} });
+        }
       });
     }
   }
 
-  // Add site to user custom list
   addBtn.addEventListener('click', async function () {
-    let site = siteInput.value.trim();
-    if (!site) return;
+    if (!localStorage) return;
 
-    site = site.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
+    const rawInput = siteInput.value.trim();
+    if (!rawInput) return;
 
-    const { blockedSites = [] } = await chrome.storage.sync.get(['blockedSites']);
+    const normalizedSite = normalizeDomain(rawInput);
+    if (!normalizedSite) {
+      alert('Please enter a valid domain name (e.g. example.com or reddit.com)');
+      return;
+    }
 
-    if (!blockedSites.some(s => s.toLowerCase() === site.toLowerCase())) {
-      const updated = [...blockedSites, site];
+    const { blockedSites = [] } = await localStorage.get(['blockedSites']);
+
+    if (!blockedSites.some(s => s.toLowerCase() === normalizedSite.toLowerCase())) {
+      const updated = [...blockedSites, normalizedSite];
       await saveAndRenderBlockedSites(updated);
       siteInput.value = '';
     } else {
@@ -88,55 +93,91 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Allow pressing Enter in the input field to add a site
   siteInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') addBtn.click();
   });
 
-  // Remove site from user custom list
   blockedList.addEventListener('click', async function (e) {
-    if (e.target.classList.contains('remove-btn')) {
+    if (e.target.classList.contains('remove-btn') && localStorage) {
       const siteToRemove = e.target.dataset.site;
-      const { blockedSites = [] } = await chrome.storage.sync.get(['blockedSites']);
+      const { blockedSites = [] } = await localStorage.get(['blockedSites']);
       const updatedSites = blockedSites.filter(site => site !== siteToRemove);
       await saveAndRenderBlockedSites(updatedSites);
     }
   });
 
-  // Export custom list
   exportBtn.addEventListener('click', async function () {
-    const { blockedSites = [] } = await chrome.storage.sync.get(['blockedSites']);
+    if (!localStorage) return;
+    const { blockedSites = [] } = await localStorage.get(['blockedSites']);
     importExportArea.value = JSON.stringify(blockedSites, null, 2);
   });
 
-  // Import custom list
   importBtn.addEventListener('click', async function () {
+    if (!localStorage) return;
+
     try {
-      const sites = JSON.parse(importExportArea.value);
-      if (Array.isArray(sites)) {
-        await saveAndRenderBlockedSites(sites);
-        importExportArea.value = 'List imported successfully!';
-      } else {
-        importExportArea.value = 'Error: must be a JSON array of strings';
+      const rawText = importExportArea.value.trim();
+      if (!rawText) {
+        importExportArea.value = 'Error: please paste JSON data to import';
+        return;
       }
+
+      const parsed = JSON.parse(rawText);
+      if (!Array.isArray(parsed)) {
+        importExportArea.value = 'Error: input must be a JSON array of domain strings (e.g. ["example.com", "site.org"])';
+        return;
+      }
+
+      const validatedSites = [];
+      const seen = new Set();
+      let skippedCount = 0;
+
+      for (const item of parsed) {
+        if (typeof item !== 'string') {
+          skippedCount++;
+          continue;
+        }
+
+        const cleanDomain = normalizeDomain(item);
+        if (cleanDomain && !seen.has(cleanDomain)) {
+          seen.add(cleanDomain);
+          validatedSites.push(cleanDomain);
+        } else {
+          skippedCount++;
+        }
+      }
+
+      if (validatedSites.length === 0) {
+        importExportArea.value = 'Error: no valid domains found in the imported array';
+        return;
+      }
+
+      await saveAndRenderBlockedSites(validatedSites);
+      const msg = skippedCount > 0
+        ? `Imported ${validatedSites.length} domains (${skippedCount} invalid/duplicate items skipped).`
+        : `Successfully imported ${validatedSites.length} domains!`;
+      importExportArea.value = msg;
     } catch (e) {
       importExportArea.value = 'Error: invalid JSON format';
     }
   });
 
-  // Toggle current site in user custom list
   toggleBlockBtn.addEventListener('click', async function () {
+    if (!localStorage) return;
+
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab || !tab.url) return;
 
     let currentSite;
     try {
-      currentSite = new URL(tab.url).hostname.replace(/^www\./, '');
+      currentSite = normalizeDomain(new URL(tab.url).hostname);
     } catch {
       return;
     }
 
-    const { blockedSites = [] } = await chrome.storage.sync.get(['blockedSites']);
+    if (!currentSite) return;
+
+    const { blockedSites = [] } = await localStorage.get(['blockedSites']);
     const isBlocked = blockedSites.some(s => s.toLowerCase() === currentSite.toLowerCase());
 
     let updatedSites;
@@ -151,17 +192,26 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   async function updateToggleButton() {
+    if (!localStorage) return;
+
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab || !tab.url) return;
 
     let currentSite;
     try {
-      currentSite = new URL(tab.url).hostname.replace(/^www\./, '');
+      currentSite = normalizeDomain(new URL(tab.url).hostname);
     } catch {
+      toggleBlockBtn.disabled = true;
       return;
     }
 
-    const { blockedSites = [] } = await chrome.storage.sync.get(['blockedSites']);
+    if (!currentSite) {
+      toggleBlockBtn.disabled = true;
+      return;
+    }
+
+    toggleBlockBtn.disabled = false;
+    const { blockedSites = [] } = await localStorage.get(['blockedSites']);
     const isBlocked = blockedSites.some(s => s.toLowerCase() === currentSite.toLowerCase());
 
     if (isBlocked) {
@@ -174,16 +224,17 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function loadAndRenderBlockedSites() {
-    const { blockedSites = [] } = await chrome.storage.sync.get(['blockedSites']);
+    if (!localStorage) return;
+    const { blockedSites = [] } = await localStorage.get(['blockedSites']);
     renderBlockedList(blockedSites);
     await updateToggleButton();
   }
 
   async function saveAndRenderBlockedSites(sites) {
-    await chrome.storage.sync.set({ blockedSites: sites });
+    if (!localStorage) return;
+    await localStorage.set({ blockedSites: sites });
     renderBlockedList(sites);
     await updateToggleButton();
-    chrome.runtime.sendMessage({ action: 'updateRules' }).catch(() => {});
   }
 
   function renderBlockedList(sites) {
@@ -193,17 +244,28 @@ document.addEventListener('DOMContentLoaded', function () {
       sitesCount.textContent = sites.length;
     }
 
-    if (sites.length === 0) {
-      blockedList.innerHTML = '<li class="empty-message">No custom sites added</li>';
+    if (!Array.isArray(sites) || sites.length === 0) {
+      const emptyLi = document.createElement('li');
+      emptyLi.className = 'empty-message';
+      emptyLi.textContent = 'No custom sites added';
+      blockedList.appendChild(emptyLi);
       return;
     }
 
     sites.forEach(site => {
       const li = document.createElement('li');
-      li.innerHTML = `
-        <span class="site-name">${site}</span>
-        <button class="remove-btn" data-site="${site}">Remove</button>
-      `;
+
+      const span = document.createElement('span');
+      span.className = 'site-name';
+      span.textContent = site;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.dataset.site = site;
+      removeBtn.textContent = 'Remove';
+
+      li.appendChild(span);
+      li.appendChild(removeBtn);
       blockedList.appendChild(li);
     });
   }

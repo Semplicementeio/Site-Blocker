@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Parse blocked URL
   const params = new URLSearchParams(window.location.search);
   const targetUrl = params.get('url');
 
   if (targetUrl) {
     try {
       const parsed = new URL(targetUrl);
-      const host = parsed.hostname.replace(/^www\./, '');
+      const host = (typeof SiteBlockerUtils !== 'undefined' && SiteBlockerUtils.normalizeDomain)
+        ? SiteBlockerUtils.normalizeDomain(parsed.hostname)
+        : parsed.hostname.replace(/^(www\.)+/i, '');
       const subEl = document.getElementById('subheading-text');
       if (subEl) {
         subEl.textContent = `You chose to block ${host} to protect your time and focus. Take a deep breath.`;
@@ -14,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch (e) {}
   }
 
-  // Close tab button ("Close tab")
   const closeBtn = document.getElementById('close-tab-btn');
   if (closeBtn) {
     closeBtn.addEventListener('click', function () {
@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Continue to site button ("Continue anyway")
   const proceedBtn = document.getElementById('proceed-btn');
   if (proceedBtn) {
     proceedBtn.addEventListener('click', function () {
@@ -58,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Breathing text cycle (12s total: 4s inhale, 4s hold, 4s exhale)
   const breathText = document.getElementById('breath-text');
   const phases = [
     { text: 'Inhale', duration: 4000 },
@@ -76,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function () {
   updateBreathPhase();
   setInterval(updateBreathPhase, 4000);
 
-  // 10s countdown
   let remainingSeconds = 10;
   const countdownEl = document.getElementById('countdown-text');
   if (proceedBtn) {

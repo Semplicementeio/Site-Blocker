@@ -1,8 +1,8 @@
-# Site Blocker - Minimal & Privacy-First Browser Extension
+# Site Blocker 3.0 - Minimal & Privacy-First Browser Extension
 
-[![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-emerald?style=flat-square&logo=shield)](LICENSE) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue?style=flat-square)](manifest.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE) [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-b91c1c?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/semplicementeio)
+[![Version: 3.0](https://img.shields.io/badge/version-3.0-blue?style=flat-square)](manifest.json) [![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-emerald?style=flat-square&logo=shield)](LICENSE) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue?style=flat-square)](manifest.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE) [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-b91c1c?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/semplicementeio)
 
-**Site Blocker** is a minimalist, privacy-first browser extension designed to help you regain full control over your digital focus and browsing habits without tracking or compromising your data.
+**Site Blocker 3.0** is a minimalist, privacy-first browser extension designed to help you regain full control over your digital focus and browsing habits without tracking or compromising your data.
 
 Most site blockers quietly collect telemetry or inject third-party scripts. Site Blocker does **none** of that. It is open-source, lightweight, and 100% local: **everything stays securely on your device**.
 

@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Site Blocker",
-  "version": "2.0",
+  "version": "3.0",
   "description": "A minimal, privacy-first browser extension to block distracting websites, YouTube Shorts, Instagram Reels, and boost focus with a 1-click Distraction-Free mode and mindful breathing pause.",
   "browser_specific_settings": {
     "gecko": {
       "id": "site-blocker@extension",
-      "strict_min_version": "113.0"
+      "strict_min_version": "115.0"
     }
   },
   "permissions": [
@@ -21,7 +21,7 @@
   ],
   "background": {
     "service_worker": "background.js",
-    "scripts": ["background.js"]
+    "scripts": ["utils.js", "background.js"]
   },
   "action": {
     "default_popup": "popup.html",
@@ -44,14 +44,14 @@
         "*://*.reddit.com/*",
         "*://*.linkedin.com/*"
       ],
-      "js": ["content_shorts.js"],
+      "js": ["utils.js", "content_shorts.js"],
       "css": ["content_shorts.css"],
       "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["blocked.html", "blocked.js", "shield.png"],
+      "resources": ["blocked.html", "blocked.js"],
       "matches": ["<all_urls>"]
     }
   ]

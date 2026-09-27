@@ -57,11 +57,47 @@ h1 {
   letter-spacing: -0.2px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.github-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 6px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.github-btn:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: #3f3f46;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.github-icon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  display: block;
+}
+
 .kofi-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 3px 8px;
+  height: 22px;
   background-color: rgba(185, 28, 28, 0.12);
   border: 1px solid rgba(185, 28, 28, 0.45);
   border-radius: 6px;
@@ -70,6 +106,7 @@ h1 {
   font-weight: 600;
   text-decoration: none;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .kofi-btn:hover {

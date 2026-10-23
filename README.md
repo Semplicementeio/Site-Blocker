@@ -8,7 +8,7 @@ Most site blockers quietly collect telemetry or inject third-party scripts. Site
 
 ---
 
-## 🌐 Supported Browsers
+## Supported Browsers
 
 Compatible with all major modern web browsers supporting WebExtension Manifest V3:
 

@@ -60,7 +60,7 @@ For local development and testing:
 
 ---
 
-## ☕ Support the Developer
+## Support the Developer
 
 If you find **Site Blocker** helpful in reclaiming your focus and saving your time, you can support future development on Ko-fi:
 

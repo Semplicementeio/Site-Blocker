@@ -68,7 +68,7 @@ If you find **Site Blocker** helpful in reclaiming your focus and saving your ti
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions and pull requests are welcome! Please keep all additions privacy-focused, lightweight, and local.
 

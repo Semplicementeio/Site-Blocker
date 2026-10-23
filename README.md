@@ -21,7 +21,7 @@ Compatible with all major modern web browsers supporting WebExtension Manifest V
 
 ---
 
-## 🛠 Main Features
+## Main Features
 
 - **🎯 Distraction-Free Mode (1-Click Master Switch)**: Turn on a single toggle to temporarily block all major social media platforms and doomscrolling sites (*YouTube, Instagram, TikTok, Facebook, X/Twitter, Reddit, Twitch, Netflix, Threads, Pinterest, LinkedIn, Discord, etc.*) without polluting your personal blocklist.
 - **🚫 Anti-Shorts & Reels Mode**: Granular toggles to block addictive short-form videos across **YouTube Shorts**, **Instagram Reels**, **TikTok**, and **Facebook Reels** (hides UI shelves, tabs, and redirects direct navigation).

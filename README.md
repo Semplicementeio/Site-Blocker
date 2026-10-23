@@ -30,7 +30,7 @@ Compatible with all major modern web browsers supporting WebExtension Manifest V
 - **Instant Tab Redirection**: Actively updates and redirects open tabs in real-time as soon as you toggle modes or block a site.
 - **Premium Charcoal & Crimson Dark UI**: Sleek, compact one-screen interface with translucent crimson accents, comfortable typography, and 100% local system UI fonts (zero external Google Fonts or CDNs).
 - **Collapsible Backup & Restore**: Effortlessly backup and restore your custom blocklist anytime via JSON with a single click.
-- **🔒 Privacy-First & CSP Compliant**: Built strictly with WebExtensions Manifest V3 with 0 analytics, 0 telemetry, and 100% local storage.
+- **Privacy-First & CSP Compliant**: Built strictly with WebExtensions Manifest V3 with 0 analytics, 0 telemetry, and 100% local storage.
 
 ---
 

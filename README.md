@@ -1,3 +1,16 @@
+> [!NOTE]
+> **This is the legacy v3 of Site Blocker.** It stays here for reference and is no longer developed.
+>
+> **Site Blocker & Time Tracker**, the newer version, is free to install:
+>
+> - **Firefox:** [Get it on Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/site-blocker-time-tracker/)
+> - **Chrome:** coming soon to the Chrome Web Store
+>
+> On top of everything in v3, it adds a time tracker that is **optional and off by default**, with a dashboard for daily and weekly stats, site categories (productive, neutral, distracting), JSON/CSV export, and automatic cleanup of old data.
+>
+> 🔒 **Privacy comes first, same as v3.** No accounts, no analytics, and nothing is ever sent anywhere: all data stays on your device, and you can export or delete it whenever you like.
+
+
 # Site Blocker 3.0 - Minimal & Privacy-First Browser Extension
 
 [![Version: 3.0](https://img.shields.io/badge/version-3.0-blue?style=flat-square)](manifest.json) [![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-emerald?style=flat-square&logo=shield)](LICENSE) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue?style=flat-square)](manifest.json) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE) [![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-b91c1c?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/semplicementeio)

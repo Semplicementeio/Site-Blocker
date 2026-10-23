@@ -74,6 +74,6 @@ Contributions and pull requests are welcome! Please keep all additions privacy-f
 
 ---
 
-## 📜 License
+## License
 
 Licensed under the [MIT License](LICENSE).

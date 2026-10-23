@@ -34,7 +34,7 @@ Compatible with all major modern web browsers supporting WebExtension Manifest V
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### Chromium-based browsers
 

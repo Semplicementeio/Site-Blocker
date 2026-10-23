@@ -28,7 +28,7 @@ Compatible with all major modern web browsers supporting WebExtension Manifest V
 - **Mindful Pause & Breathing Screen**: When attempting to access a blocked page, enjoy a calm dark-mode screen with guided breathing animation (*Inhale... Hold... Exhale...*) and a 10-second reflection countdown before deciding to continue.
 - **Custom Blocklist**: Maintain your own clean, personal list of blocked sites and subdomains with 1-click addition and removal.
 - **Instant Tab Redirection**: Actively updates and redirects open tabs in real-time as soon as you toggle modes or block a site.
-- **🎨 Premium Charcoal & Crimson Dark UI**: Sleek, compact one-screen interface with translucent crimson accents, comfortable typography, and 100% local system UI fonts (zero external Google Fonts or CDNs).
+- **Premium Charcoal & Crimson Dark UI**: Sleek, compact one-screen interface with translucent crimson accents, comfortable typography, and 100% local system UI fonts (zero external Google Fonts or CDNs).
 - **💾 Collapsible Backup & Restore**: Effortlessly backup and restore your custom blocklist anytime via JSON with a single click.
 - **🔒 Privacy-First & CSP Compliant**: Built strictly with WebExtensions Manifest V3 with 0 analytics, 0 telemetry, and 100% local storage.
 

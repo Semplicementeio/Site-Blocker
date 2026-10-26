@@ -4,7 +4,7 @@
 > **Site Blocker & Time Tracker**, the newer version, is free to install:
 >
 > - **Firefox:** [Get it on Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/site-blocker-time-tracker/)
-> - **Chrome:** coming soon to the Chrome Web Store
+> - **Chromium:** [Get it on Chrome Web Store](https://chromewebstore.google.com/detail/site-blocker-time-tracker/jhjmgiemioflljijffjdnnhbbmhecgdo)
 >
 > On top of everything in v3, it adds a time tracker that is **optional and off by default**, with a dashboard for daily and weekly stats, site categories (productive, neutral, distracting), JSON/CSV export, and automatic cleanup of old data.
 >
